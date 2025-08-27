@@ -21,6 +21,17 @@
 <body>
     <h1>{{Restaurant_Name}}</h1>
     <p>{{welcome_massage}}</p>
-    <p>{{restaurant.phone_number}}</p>
+    <p>call us:{{restaurant.phone_number}}</p>
     
 </body>
+
+
+
+
+from django.shortcuts import render
+
+def home(request):
+    context = {{
+        'Restaurant_Name':'Vanilla_Bytes'
+        'welcome_massage':"we are delighted to serve chinese tandori chicken"
+    }}

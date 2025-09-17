@@ -1,0 +1,39 @@
+import time
+
+class RateLimiter:
+    def __init__(self, max_requests: int, window_seconds: int):
+        self.max_requests = max_requests
+        self.window_seconds = window_seconds
+        self.user_requests = {}  # {user_id: [timestamps]}
+    
+    def is_allowed(self, user_id: str) -> bool:
+        """Check if a request is allowed for the user"""
+        current_time = time.time()
+        
+        # If user not in dictionary, add them
+        if user_id not in self.user_requests:
+            self.user_requests[user_id] = []
+        
+        # Remove timestamps outside the window
+        self.user_requests[user_id] = [
+            t for t in self.user_requests[user_id] 
+            if current_time - t < self.window_seconds
+        ]
+        
+        # Check if within limit
+        if len(self.user_requests[user_id]) < self.max_requests:
+            self.user_requests[user_id].append(current_time)
+            return True
+        else:
+            return False
+
+
+# Example usage
+if __name__ == "__main__":
+    limiter = RateLimiter(max_requests=3, window_seconds=10)  # 3 requests per 10 seconds
+    user = "alice"
+
+    for i in range(5):
+        allowed = limiter.is_allowed(user)
+        print(f"Request {i+1}: {'Allowed ✅' if allowed else 'Blocked ❌'}")
+        time.sleep(2)  # simulate time passing
